@@ -1,18 +1,11 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import PaymentDashboard from './Src/Screens/PaymentDashboard/PaymentDashboard'
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import React from 'react';
+
+import StackNavigator from './Src/Router/StackNavigator';
 
 const MainLayout = () => {
   return (
-    <GestureHandlerRootView
-      style={{
-        flex: 1,
-        // backgroundColor:"red"
-      }}>
-      <PaymentDashboard />
-    </GestureHandlerRootView>
+    <StackNavigator />
   );
-}
+};
 
-export default MainLayout
+export default MainLayout;

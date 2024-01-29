@@ -8,6 +8,9 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './Src/Redux/store';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import RenderOnLoad from './RenderOnLoad';
+import PaymentWebView from './Src/Screens/PaymentDashboard/PaymentWebView';
+import Login from './Src/Screens/Login/Login';
+// import DraggableItem from './Src/Screens/PaymentDashboard/DroppableItem';
 
 
 
@@ -19,10 +22,9 @@ console.log('asdasdas', store);
   },[])
   
   return (
+
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-     
-          {/* <PaymentDashboard /> */}
           <MainLayout/>
           <RenderOnLoad/>
       </PersistGate>

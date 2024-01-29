@@ -10,23 +10,32 @@ import {
 } from './Src/Redux/actions/authAction';
 
 const RenderOnLoad = props => {
+    const ChangeInYYDDMM = date => {
+      return (
+        date.toString().slice(0, 4) +
+        '-' +
+        date.toString().slice(4, 6) +
+        '-' +
+        date.toString().slice(6, 8)
+      );
+    };
   useEffect(() => {
-    console.log('asdasdas', props);
+    // console.log('asdasdas', props);
   }, [props.MAX_LIMIT]);
   const dispatch = useDispatch();
   const getMaximumLimit = () => {
     axios
       .get(AXIOS.axiosUrl + AXIOS.getMaxAmountLimitRoute)
       .then(response => {
-        console.log('adadresponse.data', response.data.COMPANY_ID);
-        props.updateMaxLimitAction( "abcd",
-          response.data.MAX_AMOUNT_LIMIT,
-        );
-        // dispatch({
-        //   type: 'MAX_LIMIT_UPDATE',
-        //   max_limit: response.data.MAX_AMOUNT_LIMIT,
-        //   company_id: response.data.COMPANY_ID,
-        // });
+        // console.log('adadresponse.data', response.data.COMPANY_ID);
+        // props.updateMaxLimitAction( "abcd",
+        //   response.data.MAX_AMOUNT_LIMIT,
+        // );
+        dispatch({
+          type: 'MAX_LIMIT_UPDATE',
+          max_limit: response.data.MAX_AMOUNT_LIMIT,
+          company_id: response.data.COMPANY_ID,
+        });
       })
       .catch(err => {
         console.log('err', err);
@@ -41,20 +50,28 @@ const RenderOnLoad = props => {
       })
       .then(response => {
         let tempResponse = [];
-        // console.log("resss",response.data);
+        // console.log("resss datadddaa",response.data);
 
-        //    response.data.map((val) => {
-        //   tempResponse.push({
-        //     ...val,
-        //     title: val.Amount,
-        //     start: ChangeInYYDDMM(val.Due_date),
-        //   });
-        // });
-        //     tempResponse.sort(function (a, b) {
-        //   return b.title - a.title;
-        // });
-        // console.log('ressss data', tempResponse);
-        updatePaymentDataAction(response.data);
+           response.data.map((val) => {
+            // console.log("val",val);
+            tempResponse.push({
+              ...val,
+              title: val.Amount,
+              start: ChangeInYYDDMM(val.Due_date),
+              Due_date:ChangeInYYDDMM(val.Due_date),
+            });
+ 
+        });
+            tempResponse.sort(function (a, b) {
+          return b.title - a.title;
+        });
+      //  console.log('ressss data', tempResponse);
+        // updatePaymentDataAction(response.data);
+        dispatch({
+          type: 'UPDATE_PAYMENT_DATA',
+
+          payment_data: tempResponse,
+        });
       });
   };
   useEffect(() => {

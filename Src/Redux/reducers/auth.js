@@ -24,18 +24,17 @@ const auth = (state = initialState, action) => {
         company_id: action.company_id,
         disabled_dates: action.disabled_dates,
       };
+    case 'MAX_LIMIT_AUTH':
+      return {
+        ...state,
+        max_limit: action.max_limit,
+      };
     case 'MAX_LIMIT_UPDATE':
       return {
         ...state,
         max_limit: action.max_limit,
         company_id: action.company_id,
       };
-    // case 'UPDATE_PAYMENT_DATA':
-    //   return {
-    //     ...state,
-    //     payment_data: action.payment_data,
-    //   };
-
     default:
       return state;
   }

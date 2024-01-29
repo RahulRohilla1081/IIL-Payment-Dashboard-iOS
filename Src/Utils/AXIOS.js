@@ -1,4 +1,4 @@
-const axiosUrl = 'http://10.5.50.253:9000/';
+const axiosUrl = 'http://timesheet.samishti.com:7001/';
 const UpdatePOsPaymentStatus = 'apis/UpdatePOsPaymentStatus';
 const SAPPOsGetRoute = 'apis/SAPPOsGetRoute';
 const updateMaxAmountLimitRoute = 'apis/updateMaxAmountLimit';

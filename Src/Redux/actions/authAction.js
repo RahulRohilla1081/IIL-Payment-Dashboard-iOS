@@ -1,3 +1,6 @@
+import axios from "axios";
+import AXIOS from "../../Utils/AXIOS";
+
 export const updateAuthAction =
   (
     IS_AUTH,
@@ -38,4 +41,36 @@ export const updateAuthAction =
 
       //   payment_data: PAYMENT_DATA,
       // });
+    };
+    export const getPOsDataAction = (startDate, endDate) => dispatch=> {
+      console.log("caaaaling",startDate,endDate);
+      axios
+        .post(AXIOS.axiosUrl + AXIOS.SAPPOsGetRoute, {
+          Date_From: startDate,
+          Date_To: endDate,
+        })
+        .then(response => {
+          let tempResponse = [];
+          console.log('resss datadddaa', response.data);
+
+          response.data.map(val => {
+            // console.log("val",val);
+            tempResponse.push({
+              ...val,
+              title: val.Amount,
+              start: ChangeInYYDDMM(val.Due_date),
+              Due_date: ChangeInYYDDMM(val.Due_date),
+            });
+          });
+          tempResponse.sort(function (a, b) {
+            return b.title - a.title;
+          });
+          //  console.log('ressss data', tempResponse);
+          // updatePaymentDataAction(response.data);
+          dispatch({
+            type: 'UPDATE_PAYMENT_DATA',
+
+            payment_data: tempResponse,
+          });
+        });
     };
