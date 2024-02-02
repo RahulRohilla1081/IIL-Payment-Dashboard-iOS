@@ -74,3 +74,13 @@ export const updateAuthAction =
           });
         });
     };
+
+    const maxLimitUpdateAction=(limit,company_code)=>(dispatch)=>{
+
+      dispatch({
+        TYPE: 'MAX_LIMIT_UPDATE',
+        max_limit:"",
+        company_id:""
+      });
+
+    }

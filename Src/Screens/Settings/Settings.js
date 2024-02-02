@@ -19,6 +19,7 @@ import CustomButton from '../../Components/CustomButton/CustomButton';
 import Toast from 'react-native-toast-message';
 import IconButton from '../../Components/IconButton/IconButton';
 import { DASHBOARD, SETTING } from '../../Router/Routes';
+import DocumentPicker from 'react-native-document-picker';
 
 const Settings = props => {
   const dispatch = useDispatch();
@@ -35,7 +36,9 @@ const Settings = props => {
   useEffect(() => {
     console.log('asbdjbsadjas rahul', props.MAX_LIMIT);
     setMaxAmountLimit(props.MAX_LIMIT);
-  }, [props.MAX_LIMIT]);
+  }, [props.MAX_LIMIT,dummy]);
+
+  const [dummy,setDummy]=useState(false)
   const updateSettings = () => {
     setTransactionStarted(true);
     axios
@@ -49,13 +52,13 @@ const Settings = props => {
         console.log("output",response.data, props.COMPANY_ID);
               dispatch({
                 type: 'MAX_LIMIT_AUTH',
-                max_limit: response.data,
-           
+                max_limit: maxAmountLimit,
               });
            Toast.show({
              type: 'success',
              text1: 'Max Limit updated',
            });
+           setDummy(true)
         setTransactionStarted(false);
       })
       .catch(err => {
@@ -72,6 +75,13 @@ const Settings = props => {
         }}>{item.DATE}</Text>
     )
 
+  }
+
+  const handleExcelSheetClick=async()=>{
+    const res = await DocumentPicker.pick({
+    type: [DocumentPicker.types.allFiles],
+});
+this.setState({ singleFile: res });
   }
   return (
     <SafeAreaView
@@ -118,7 +128,11 @@ const Settings = props => {
             <InputField
               label={'Max Limit'}
               value={maxAmountLimit}
-              onChangeText={limit => setMaxAmountLimit(limit)}
+              onChangeText={limit =>{
+                let filteredString = limit
+                  .replace(/[^0-9]/g, '')
+                  .replace(/(\..*)\./g, '');
+                setMaxAmountLimit(filteredString);}}
               style={{
                 width: (width * 25) / 100,
                 color: '#000',
@@ -134,7 +148,7 @@ const Settings = props => {
                   }}
                 />
               }
-              inputType="text"
+              keyboardType="numeric"
 
               // fieldButtonLabel={'Forgot?'}
               // fieldButtonFunction={() => {}}
@@ -163,8 +177,8 @@ const Settings = props => {
               <IconButton
                 icon={IMAGES.fileImport}
                 onPress={() => {
-                  // SessionLogout();
-                  props.navigation.navigate(DASHBOARD);
+                  handleExcelSheetClick();
+                  // props.navigation.navigate(DASHBOARD);
                 }}
                 containerStyle={{
                   shadowColor: '#d3d3d3',

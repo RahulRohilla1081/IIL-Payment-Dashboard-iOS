@@ -54,7 +54,6 @@ const PaymentDashboard = props => {
     setPaymentMaxLimit(props.MAX_LIMIT);
   }, [props.MAX_LIMIT]);
   useEffect(() => {
-    console.log('sdasdasdas sabeld date', props.DISABLED_DATES);
   }, [props.DISABLED_DATES]);
 
   const [CurrentSelectedMonth, setCurrentSelectedMonth] = useState(
@@ -122,7 +121,6 @@ const PaymentDashboard = props => {
   });
 
   useEffect(() => {
-    console.log('asbdjbsadjas rahul dash', props);
     // setMaxAmountLimit(props.MAX_LIMIT);
   }, [props]);
 
@@ -225,8 +223,10 @@ const PaymentDashboard = props => {
 
     for (var i = 1; i <= monthDays; i++) {
       let tempMonth;
-      if (monthNum > 1 && monthNum < 10) {
-        tempMonth = '0' + monthNum;
+      console.log('Change this', Number(monthNum));
+
+      if (monthNum >= 1 && monthNum < 10) {
+        tempMonth = '0' + Number(monthNum);
       } else {
         tempMonth = monthNum;
       }
@@ -250,6 +250,19 @@ const PaymentDashboard = props => {
     let convertDate = JSON.stringify(date);
     return convertDate.slice(1, 11);
   };
+    function numCommaSeparate(val) {
+      // if (val >= 10000000) {
+      // val = (val / 10000000).toFixed(2) + ' Cr';
+   
+
+      // } else if (val >= 100000) {
+      //   val = (val / 100000).toFixed(2) + " Lac";
+      // }
+      /*else if(val >= 1000) val = (val/1000).toFixed(2) + ' K';*/
+      return "₹ "+Number(parseFloat(val).toFixed(2)).toLocaleString('in', {
+        minimumFractionDigits: 2,
+      });
+    }
 
 
 
@@ -312,7 +325,12 @@ const PaymentDashboard = props => {
     finalMonthCal.map(val => {
       const flag = checkDateDisabled(val.DATE);
 
-     console.log('asdasd rahul', );;
+      console.log(
+        'SAdadassdas',
+        val,
+        val.DATE , convertDateIntoYYYMMDD(new Date()),
+        val.DATE == convertDateIntoYYYMMDD(new Date()),
+      );
 
      if (val.DATE == convertDateIntoYYYMMDD(new Date())){
       val.CURRENT_DATE= true
@@ -726,6 +744,7 @@ const PaymentDashboard = props => {
   );
 
   const renderCalendarView = (item, index) => {
+    // console.log("Asdasdasdasdasdsa",item);
     const seventyFivePercentage = (Number(paymentMaxLimit) * 75) / 100;
 
     let selectedColor;
@@ -1491,7 +1510,7 @@ CardBGColor = "#d3dede";
                                 fontWeight: 'bold',
                                 color: 'red',
                               }}>
-                              {val.VENDOR_TOTAL_PAYMENT}
+                              {numCommaSeparate(val.VENDOR_TOTAL_PAYMENT)}
                             </Text>
                           </View>
 
@@ -1649,7 +1668,7 @@ CardBGColor = "#d3dede";
                           fontWeight: 600,
                         }}>
                         {' '}
-                        {val.SUM}
+                        {numCommaSeparate(val.SUM)}
                       </Text>
                     </View>
                   </Popover>
@@ -1929,7 +1948,7 @@ CardBGColor = "#d3dede";
                                     fontWeight: 'bold',
                                     color: 'red',
                                   }}>
-                                  {val.Amount}
+                                  {numCommaSeparate(val.Amount)}
                                 </Text>
                               </View>
                             </View>
