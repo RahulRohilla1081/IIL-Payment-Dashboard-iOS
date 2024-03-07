@@ -124,15 +124,24 @@ this.setState({ singleFile: res });
                 Settings
               </Text>
             </View>
+            <Text
+              style={{
+                marginHorizontal: 10,
+
+                fontSize: 20,
+              }}>
+              Max amt. Limit
+            </Text>
 
             <InputField
               label={'Max Limit'}
               value={maxAmountLimit}
-              onChangeText={limit =>{
+              onChangeText={limit => {
                 let filteredString = limit
                   .replace(/[^0-9]/g, '')
                   .replace(/(\..*)\./g, '');
-                setMaxAmountLimit(filteredString);}}
+                setMaxAmountLimit(filteredString);
+              }}
               style={{
                 width: (width * 25) / 100,
                 color: '#000',
