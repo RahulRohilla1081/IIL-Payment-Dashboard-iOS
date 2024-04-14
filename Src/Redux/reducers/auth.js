@@ -6,9 +6,11 @@ const initialState = {
   max_limit: null,
   company_id: null,
   session_token: null,
-  disabled_dates: [
-  ],
+  lower_limit_percentage: null,
+  carry_forward: null,
+  disabled_dates: [],
   payment_data: [],
+  last_sync_date: new Date(),
 };
 
 const auth = (state = initialState, action) => {
@@ -23,11 +25,24 @@ const auth = (state = initialState, action) => {
         session_token: action.session_token,
         company_id: action.company_id,
         disabled_dates: action.disabled_dates,
+        lower_limit_percentage: action.lower_limit_percentage,
+        // mid_limit_percentage: action.mid_limit_percentage,
+        max_limit: action.max_limit,
+        carry_forward: action.carry_forward,
       };
     case 'MAX_LIMIT_AUTH':
       return {
         ...state,
         max_limit: action.max_limit,
+        lower_limit_percentage: action.lower_limit_percentage,
+        carry_forward: action.carry_forward,
+
+        // mid_limit_percentage: action.mid_limit_percentage,
+      };
+    case 'UPDATE_LAST_SYNC_DATE':
+      return {
+        ...state,
+        last_sync_date: action.last_sync_date,
       };
     case 'MAX_LIMIT_UPDATE':
       return {

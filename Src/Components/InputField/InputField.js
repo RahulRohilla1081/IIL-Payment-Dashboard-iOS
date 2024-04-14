@@ -11,17 +11,19 @@ export default function InputField({
   onChangeText,
   style,
   value,
+  containerStyle,
 }) {
   return (
     <View
       style={{
         flexDirection: 'row',
-        alignItems:"center",
+        alignItems: 'center',
         borderColor: '#ccc',
         borderWidth: 1,
         paddingVertical: 8,
-        marginBottom: 25,
+        // marginBottom: 25,
         borderRadius: 10,
+        ...containerStyle,
       }}>
       {icon}
       {inputType == 'password' ? (

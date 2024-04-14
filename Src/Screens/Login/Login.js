@@ -82,7 +82,6 @@ const Login = props => {
           console.log(err);
         });
     } else {
-
     }
   };
 
@@ -107,20 +106,35 @@ const Login = props => {
         })
         .then(response => {
           setTransactionStarted(false);
-          //   console.log('adasdas', response.data);
-             let data = response.data.SESSION_DATA;
 
-          dispatch({
-            type: 'AUTH_DATA_UPDATE',
-            is_auth: true,
-            auth_id: data?.CUSTOMER_ID,
-            auth_name: data?.NAME,
-            auth_email: data?.NAME,
-            session_token: data?.SESSION_ID,
-            company_id: data?.COMPANY_ID,
-            disabled_dates: response.data?.DISABLED_DATE,
-          });
-          props.navigation.navigate(DASHBOARD);
+          if (response.data.SESSION_DATA) {
+            let data = response.data.SESSION_DATA;
+
+          console.log('adasdas', data.MAX_AMOUNT_LIMIT);
+
+
+            dispatch({
+              type: 'AUTH_DATA_UPDATE',
+              is_auth: true,
+              auth_id: data?.CUSTOMER_ID,
+              auth_name: data?.NAME,
+              auth_email: data?.NAME,
+              session_token: data?.SESSION_ID,
+              company_id: data?.COMPANY_ID,
+              lower_limit_percentage: data?.LOWER_LIMIT_PERCENTAGE,
+              carry_forward: data?.CARRY_FORWARD,
+              mid_limit_percentage: data?.MID_LIMIT_PERCENTAGE,
+              max_limit: data?.MAX_AMOUNT_LIMIT,
+              disabled_dates: response.data?.DISABLED_DATE,
+            });
+            props.navigation.navigate(DASHBOARD);
+          } else {
+            Toast.show({
+              type: 'error',
+              text1: 'Wrong Password',
+              //   text2: 'Please contact support',
+            });
+          }
 
           //    true,
           //      data?.CUSTOMER_ID,
@@ -310,7 +324,7 @@ const Login = props => {
                       <Text
                         style={{
                           color: '#4C8BF5',
-                          fontWeight:"bold"
+                          fontWeight: 'bold',
                         }}>
                         Use Password instead?
                       </Text>
@@ -325,7 +339,7 @@ const Login = props => {
                       <Text
                         style={{
                           color: '#4C8BF5',
-                          fontWeight:"bold"
+                          fontWeight: 'bold',
                         }}>
                         Use OTP instead?
                       </Text>

@@ -35,12 +35,19 @@ export const updateAuthAction =
   };
 
     export const updatePaymentDataAction = PAYMENT_DATA => dispatch => {
-      console.log('PAYMENT_DATA', PAYMENT_DATA);
+      // console.log('PAYMENT_DATA', PAYMENT_DATA);
       // dispatch({
       //   type: 'UPDATE_PAYMENT_DATA',
 
       //   payment_data: PAYMENT_DATA,
       // });
+    };
+    export const updateDataSyncDate = LAST_SYNC_DATE => dispatch => {
+      // console.log('asdasdasdasdasdasdasda', LAST_SYNC_DATE);
+      dispatch({
+        type: 'UPDATE_LAST_SYNC_DATE',
+        last_sync_date: LAST_SYNC_DATE,
+      });
     };
     export const getPOsDataAction = (startDate, endDate) => dispatch=> {
       console.log("caaaaling",startDate,endDate);
@@ -51,7 +58,7 @@ export const updateAuthAction =
         })
         .then(response => {
           let tempResponse = [];
-          console.log('resss datadddaa', response.data);
+          // console.log('resss datadddaa', response.data);
 
           response.data.map(val => {
             // console.log("val",val);

@@ -16,6 +16,9 @@ import contactMail from './contact-mail.png';
 import options from './options.png';
 import fileImport from './file.png';
 import search from './search.png';
+import refresh from './refresh.png';
+import save from './save.png';
+import limited from './limited.png';
 
 export default {
   NextButton,
@@ -36,4 +39,7 @@ export default {
   options,
   fileImport,
   search,
+  refresh,
+  save,
+  limited,
 };

@@ -10,6 +10,7 @@ const UserSessionTokenVerify = 'apis/Auth/UserSessionTokenVerify';
 const UserSessionLogout = 'apis/Auth/UserSessionLogout';
 const DisableDates = 'apis/DisableDates/DisableDates';
 const FreezePayment = 'apis/PaymentUpdates/FreezePayment';
+const SavePayments = 'apis/PaymentUpdates/SavePayments';
 export default {
   axiosUrl,
   SAPPOsGetRoute,
@@ -22,4 +23,5 @@ export default {
   UserSessionTokenVerify,
   DisableDates,
   FreezePayment,
+  SavePayments,
 };

@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   SafeAreaView,
+  Image,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 // import {Popover, Tooltip} from 'react-native-popper';
@@ -29,6 +30,197 @@ import Popover, {
 import ImageIcon from '../../Components/ImageIcon/ImageIcon';
 import {SETTING} from '../../Router/Routes';
 import InputField from '../../Components/InputField/InputField';
+import AnimatedIconButton from '../../Components/AnimatedButton/AnimatedButton';
+import Toast from 'react-native-toast-message';
+import LinearGradient from 'react-native-linear-gradient';
+import {updateDataSyncDate} from '../../Redux/actions/authAction';
+
+const LC_COLOR = [
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+  '#F6BE00',
+  '#fff',
+];
+const SALARY_COLOR = [
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+  '#618264',
+  '#e5fffd',
+];
+
+const TDS_COLOR = [
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+  '#00a1e4',
+  '#fff',
+];
+const GST_COLOR = [
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+  '#f3752b',
+  '#fff',
+];
+
 const PaymentDashboard = props => {
   const {height, width} = useWindowDimensions();
   const dispatch = useDispatch();
@@ -43,6 +235,7 @@ const PaymentDashboard = props => {
   };
 
   const [paymentMaxLimit, setPaymentMaxLimit] = useState('');
+  const [paymentLowerLimit, setPaymentLowerLimit] = useState(0);
   const [searchedVendor, setSearchedVendor] = useState('');
   const [disabledDates, setDisabledDates] = useState('');
 
@@ -52,14 +245,16 @@ const PaymentDashboard = props => {
 
   useEffect(() => {
     setPaymentMaxLimit(props.MAX_LIMIT);
-  }, [props.MAX_LIMIT]);
-  useEffect(() => {
-  }, [props.DISABLED_DATES]);
+    if (props.LOWER_LIMIT_PERCENTAGE != undefined) {
+      setPaymentLowerLimit(props.LOWER_LIMIT_PERCENTAGE);
+    }
+  }, [props]);
+  useEffect(() => {}, [props.DISABLED_DATES]);
 
   const [CurrentSelectedMonth, setCurrentSelectedMonth] = useState(
     convertIndianStandardIntoYMD(new Date()),
   );
-  const [selectedDate, setSelectedDate] = useState();
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const MonthArr = [
     {
@@ -223,7 +418,6 @@ const PaymentDashboard = props => {
 
     for (var i = 1; i <= monthDays; i++) {
       let tempMonth;
-      console.log('Change this', Number(monthNum));
 
       if (monthNum >= 1 && monthNum < 10) {
         tempMonth = '0' + Number(monthNum);
@@ -250,27 +444,39 @@ const PaymentDashboard = props => {
     let convertDate = JSON.stringify(date);
     return convertDate.slice(1, 11);
   };
-    function numCommaSeparate(val) {
-      // if (val >= 10000000) {
-      // val = (val / 10000000).toFixed(2) + ' Cr';
-   
-      // } else if (val >= 100000) {
-      //   val = (val / 100000).toFixed(2) + " Lac";
-      // }
-      /*else if(val >= 1000) val = (val/1000).toFixed(2) + ' K';*/
-      return "₹ "+Number(parseFloat(val).toFixed(2)).toLocaleString('in', {
+  function numCommaSeparate(val) {
+    // if (val >= 10000000) {
+    // val = (val / 10000000).toFixed(2) + ' Cr';
+
+    // } else if (val >= 100000) {
+    //   val = (val / 100000).toFixed(2) + " Lac";
+    // }
+    /*else if(val >= 1000) val = (val/1000).toFixed(2) + ' K';*/
+    return (
+      '₹ ' +
+      Number(parseFloat(val).toFixed(2)).toLocaleString('in', {
         minimumFractionDigits: 2,
-      });
-    }
-
-
+      })
+    );
+  }
 
   const checkDateDisabled = clickedDate => {
     if (props.DISABLED_DATES != undefined) {
-      const isDateDisabled = props.DISABLED_DATES.find(val => {
-        return convertDateIntoYYYMMDD(val.DATE) === clickedDate;
+      let isDateDisabled = {FLAG: false, TYPE: ''};
+      props.DISABLED_DATES.find(val => {
+        let date = new Date(val.DATE);
+        let finalDate = new Date(date.setDate(date.getDate() + 1));
+
+        // Add a day
+
+        if (convertDateIntoYYYMMDD(finalDate) === clickedDate) {
+          isDateDisabled = {FLAG: true, TYPE: val.TYPE};
+        }
       });
-      return !!isDateDisabled;
+
+      return {STATUS: isDateDisabled.FLAG, TYPE: isDateDisabled.TYPE};
+    } else {
+      return {STATUS: false, TYPE: ''};
     }
   };
 
@@ -324,24 +530,14 @@ const PaymentDashboard = props => {
     finalMonthCal.map(val => {
       const flag = checkDateDisabled(val.DATE);
 
-      console.log(
-        'SAdadassdas',
-        val,
-        val.DATE , convertDateIntoYYYMMDD(new Date()),
-        val.DATE == convertDateIntoYYYMMDD(new Date()),
-      );
-
-     if (val.DATE == convertDateIntoYYYMMDD(new Date())){
-      val.CURRENT_DATE= true
-     }else{
-      val.CURRENT_DATE = false;
-
-     }
-       val.IS_DATE_DISABLED = flag;
-
+      if (val.DATE == convertDateIntoYYYMMDD(new Date())) {
+        val.CURRENT_DATE = true;
+      } else {
+        val.CURRENT_DATE = false;
+      }
+      val.IS_DATE_DISABLED = flag.STATUS;
+      val.DATE_DISABLED_TYPE = flag.TYPE;
     });
-
-
 
     return finalMonthCal;
   }
@@ -410,7 +606,13 @@ const PaymentDashboard = props => {
         tempCalendarDates.map((val, index) => {
           if (val?.EVENT) {
             val.EVENT?.PAYMENT_DETAILS.map((innerVal, innerIndex) => {
-              if (innerVal.Document_No == draggedEvent.Document_No) {
+
+              if (
+                innerVal.Document_No == draggedEvent.Document_No &&
+                innerVal.Item == draggedEvent.Item &&
+                innerVal.Fiscal_year == draggedEvent.Fiscal_year &&
+                innerVal.Company_Code == draggedEvent.Company_Code
+              ) {
                 tempCalendarDates[index].EVENT.PAYMENT_DETAILS.splice(
                   innerIndex,
                   1,
@@ -419,6 +621,9 @@ const PaymentDashboard = props => {
             });
           }
         });
+
+        
+
 
         if (receiverData?.EVENT == undefined) {
           //if no data exist on receiverDate
@@ -434,6 +639,23 @@ const PaymentDashboard = props => {
             //   PaymentStatus:false,
             // PaymentStatusSAP:false
           };
+              let tempSubPaymentDate = [...subPaymentDate];
+              const CurrentSubPaymentIndex = tempSubPaymentDate.findIndex(
+                val =>
+                  val.Document_No == draggedEvent.Document_No &&
+                  val.Item == draggedEvent.Item &&
+                  val.Fiscal_year == draggedEvent.Fiscal_year &&
+                  val.Company_Code == draggedEvent.Company_Code,
+              );
+
+              if (CurrentSubPaymentIndex != -1) {
+                tempSubPaymentDate.splice(CurrentSubPaymentIndex, 1);
+              }
+              tempSubPaymentDate.sort(function (a, b) {
+                return b.TOTAL_PAYMENT - a.TOTAL_PAYMENT;
+              });
+
+              setSubPaymentDate(tempSubPaymentDate);
         } else {
           const receiverDateIndex = tempCalendarDates.findIndex(
             dateIndex => dateIndex.DATE == receiverData.DATE,
@@ -445,7 +667,11 @@ const PaymentDashboard = props => {
           //remove from SubPaymentArr
           let tempSubPaymentDate = [...subPaymentDate];
           const CurrentSubPaymentIndex = tempSubPaymentDate.findIndex(
-            val => val.Document_No == draggedEvent.Document_No,
+            val =>
+              val.Document_No == draggedEvent.Document_No &&
+              val.Item == draggedEvent.Item &&
+              val.Fiscal_year == draggedEvent.Fiscal_year &&
+              val.Company_Code == draggedEvent.Company_Code,
           );
 
           if (CurrentSubPaymentIndex != -1) {
@@ -512,6 +738,61 @@ const PaymentDashboard = props => {
     setIsLoaderModalVisible(false);
   };
 
+  function getRelativeTime(dateTime) {
+    let timeSince = new Date().getTime() - new Date(dateTime).getTime();
+    timeSince = Math.abs(timeSince);
+    const MINUTE = 60 * 1000;
+    // milliseconds in a minute
+    const HOUR = 60 * MINUTE;
+    // milliseconds in an hour
+    const DAY = 24 * HOUR;
+    // milliseconds in a day
+
+    if (Number(timeSince) < MINUTE) {
+      return 'Just Now';
+    } else if (Number(timeSince) < 2 * MINUTE) {
+      return '1 min ago';
+    } else if (Number(timeSince) < HOUR) {
+      return Math.floor(timeSince / MINUTE) + ' min ago';
+    } else if (Number(timeSince) < 2 * HOUR) {
+      return 'an hour ago';
+    } else if (Number(timeSince) < DAY) {
+      return Math.floor(timeSince / HOUR) + ' hours ago';
+    } else if (Number(timeSince) < 2 * DAY) {
+      return 'yesterday';
+    } else {
+      return Math.floor(Number(timeSince) / DAY) + ' days ago';
+    }
+  }
+
+  const [lastSync, setLastSync] = useState(null);
+
+  useEffect(() => {
+
+  }, [props.LAST_SYNC_DATE]);
+
+  function updateRelativeTime() {
+    // const dateTime = new Date();
+    // Replace this with your desired DateTime
+    const relativeTime = getRelativeTime(props.LAST_SYNC_DATE);
+    setLastSync(relativeTime);
+
+    // setLastSync();
+  }
+  // Call updateRelativeTime() initially to display the relative time immediately
+
+  useEffect(() => {
+    updateRelativeTime();
+
+    // Call the function every minute
+
+    const intervalId = setInterval(updateRelativeTime, 6000); // 60000 milliseconds = 1 minute
+
+    // Clean up the interval when the component unmounts
+
+    return () => clearInterval(intervalId);
+  }, [props.LAST_SYNC_DATE]); // Empty dependency array ensures this effect runs only once
+
   const getCalenderAmountSum = Data => {
     let tempData = [...Data];
     tempData.map((val, index) => {
@@ -563,6 +844,7 @@ const PaymentDashboard = props => {
     currentYear,
     PaymentData,
     currentDate,
+    showNotification,
   ) => {
     // let startDate = '20231001';
     // let enDate = '20231031';
@@ -574,7 +856,7 @@ const PaymentDashboard = props => {
     // setStaticData(tempStaticData);
 
     tempStaticData.map(val => {
-      const dataExist = PaymentData.filter(item => item.Due_date == val.DATE);
+      const dataExist = PaymentData.filter(item => item.SAVED_DATE == val.DATE);
       if (dataExist.length > 0) {
         val.EVENT = {
           TOTAL_PAYMENT: 0,
@@ -589,8 +871,12 @@ const PaymentDashboard = props => {
     let tempVendorTotalData = [];
 
     PaymentData.map(val => {
-      let [year, month, day] = val.Due_date.split('-');
-      if (month == currentMonth) {
+      let [year, month, day] = val.SAVED_DATE.split('-');
+
+      if (
+        Number(month) == Number(currentMonth) &&
+        Number(year) == Number(currentYear)
+      ) {
         const foundVendorIndex = tempVendorTotalData.findIndex(
           item => item.Vendor_Code == val.Vendor_Code,
         );
@@ -643,7 +929,14 @@ const PaymentDashboard = props => {
     let tempTotalPaymentAmount = 0;
     tempCalendarDates.map(val => {
       if (val?.EVENT != undefined) {
-        tempTotalPaymentAmount += Number(val?.EVENT?.TOTAL_PAYMENT);
+        //adding only current month payments in monthly total
+        const [year, month, day] = val.DATE.split('-');
+        if (
+          Number(year) == Number(currentYear) &&
+          Number(month) == Number(currentMonth)
+        ) {
+          tempTotalPaymentAmount += Number(val?.EVENT?.TOTAL_PAYMENT);
+        }
       }
     });
     setVendorTotalData(tempVendorTotalData);
@@ -656,6 +949,13 @@ const PaymentDashboard = props => {
     setCalendarDates(tempCalendarDates);
     // setStateDummy(tempCalendarDates);
     setCalendarCopyDates(tempCalendarDates);
+    if (showNotification) {
+      Toast.show({
+        type: 'success',
+        text1: 'Data Synced',
+        //   text2: 'Please contact support',
+      });
+    }
   };
 
   const [PaymentDataProps, setPaymentDataProps] = useState([]);
@@ -668,7 +968,7 @@ const PaymentDashboard = props => {
       date.toString().slice(6, 8)
     );
   };
-  const getPOsDataAction = (startDate, endDate) => {
+  const getPOsDataAction = (startDate, endDate, showNotification) => {
     setIsLoaderModalVisible(true);
 
     axios
@@ -679,17 +979,26 @@ const PaymentDashboard = props => {
       .then(response => {
         let tempResponse = [];
 
+        props.updateDataSyncDate(new Date());
+
         response.data.map(val => {
+          let tempSavedDate = val.Due_date;
+          if (val?.SAVED_DATE != undefined) {
+            tempSavedDate = val.SAVED_DATE;
+          }
+
           tempResponse.push({
             ...val,
             title: val.Amount,
             start: ChangeInYYDDMM(val.Due_date),
             Due_date: ChangeInYYDDMM(val.Due_date),
+            SAVED_DATE: ChangeInYYDDMM(tempSavedDate),
           });
         });
         tempResponse.sort(function (a, b) {
           return b.title - a.title;
         });
+
         // tempResponse.map((val)=>{
         //   // 2023-11-04
         //  const [year,month,day]=val.Due_date.split("-")
@@ -701,7 +1010,13 @@ const PaymentDashboard = props => {
         let [year, month, day] = CurrentSelectedMonth.split('-');
 
         setPaymentDataProps(tempResponse);
-        getPaymentData(month, year, tempResponse, CurrentSelectedMonth);
+        getPaymentData(
+          month,
+          year,
+          tempResponse,
+          CurrentSelectedMonth,
+          showNotification,
+        );
         // dispatch({
         //   type: 'UPDATE_PAYMENT_DATA',
 
@@ -712,13 +1027,14 @@ const PaymentDashboard = props => {
       .catch(err => {
         let [year, month, day] = CurrentSelectedMonth.split('-');
         setPaymentDataProps([]);
-        getPaymentData(month, year, [], CurrentSelectedMonth);
+        getPaymentData(month, year, [], CurrentSelectedMonth, true);
         setIsLoaderModalVisible(false);
       });
   };
 
   useEffect(() => {
     let [year, month, day] = CurrentSelectedMonth.split('-');
+
     const startDate = year + month + '01';
     const endDate = year + month + '31';
     getPOsDataAction(startDate, endDate);
@@ -743,8 +1059,8 @@ const PaymentDashboard = props => {
   );
 
   const renderCalendarView = (item, index) => {
-    // console.log("Asdasdasdasdasdsa",item);
-    const seventyFivePercentage = (Number(paymentMaxLimit) * 75) / 100;
+    const seventyFivePercentage =
+      (Number(paymentMaxLimit) * paymentLowerLimit) / 100;
 
     let selectedColor;
     if (Number(item?.EVENT?.TOTAL_PAYMENT) < seventyFivePercentage) {
@@ -768,24 +1084,34 @@ const PaymentDashboard = props => {
 
     let CardBGColor;
     let CardTextColor;
-    if(item.IS_DATE_DISABLED==true){
-      CardBGColor="gray";
-      CardTextColor="#fff";
-    }
-    else if(item.CURRENT_DATE==true){
-      CardBGColor = '#4C8BF5';
+    let borderColor;
+
+    // if (item.IS_DATE_DISABLED == true) {
+    //   CardBGColor = ['gray','gray'];
+    //   CardTextColor = '#fff';
+    // }
+    if (item.DATE_DISABLED_TYPE == 'SALARY') {
+      CardBGColor = SALARY_COLOR;
+    } else if (item.DATE_DISABLED_TYPE == 'TDS') {
+      CardBGColor = TDS_COLOR;
+    } else if (item.DATE_DISABLED_TYPE == 'GST') {
+      CardBGColor = GST_COLOR;
+    } else if (item.DATE_DISABLED_TYPE == 'LC') {
+      CardBGColor = LC_COLOR;
+    } else if (item.CURRENT_DATE == true) {
+      CardBGColor = ['#87cefa', '#87cefa'];
       CardTextColor = '#fff';
-    }
-    else if(item.DATE_OUTSIDE==true ){
-      CardBGColor = '#dedede';
+    } else if (item.DATE_OUTSIDE == true) {
+      CardBGColor = ['#dedede', '#dedede'];
+      CardTextColor = '#000';
+    } else {
+      // CardBGColor = "#d3dede";
+      CardBGColor = ['#e0fffd', '#e0fffd'];
       CardTextColor = '#000';
     }
-    else{
-CardBGColor = "#d3dede";
-      CardTextColor = '#000';
-
+    if (item.DATE == selectedDate) {
+      borderColor = 'red';
     }
-
 
     return (
       <View key={index}>
@@ -805,7 +1131,10 @@ CardBGColor = "#d3dede";
             </Text>
           </View>
         )}
-        <View
+        <LinearGradient
+          colors={[...CardBGColor]}
+          start={{x: 0, y: 0}}
+          end={{x: 1, y: 1}}
           style={[
             styles.boxContainer,
             {
@@ -817,156 +1146,224 @@ CardBGColor = "#d3dede";
               marginRight: marginHorizontal,
               marginTop: 5,
               shadowColor: '#d3d3d3',
+              borderColor: borderColor,
+              borderWidth: borderColor == undefined ? 0 : 1,
               shadowOffset: {width: 0, height: 0},
               shadowOpacity: 1,
               shadowRadius: 8,
               elevation: 8,
-              backgroundColor: CardBGColor,
+              // backgroundColor: CardBGColor,
               padding: 5,
               borderRadius: 5,
             },
           ]}>
-          <Text
-            style={{
-              fontSize: 18,
-              color: CardTextColor,
-            }}>
-            {item.DATE.split('-')[2]}
-          </Text>
+          {/* <Text>Hekki</Text> */}
 
-          <DraxView
-            style={[
-              {
-                width: tileWidth,
-                height: boxHeight,
-                marginTop: marginVertical,
-                marginBottom: marginVertical,
-                marginLeft: marginHorizontal,
-                marginRight: marginHorizontal,
-              },
-            ]}
-            // _onReceiveDragDrop
+          <>
+            <Text
+              style={{
+                fontSize: 18,
+                color: CardTextColor,
+              }}>
+              {item.DATE.split('-')[2]}
+            </Text>
 
-            payload={item}
-            onDrag={e => {
-              handleDateClick(e);
-            }}
-            onDragEnd={e => {
-              handleInlineCanceledDragDrop(e);
-            }}
-            receivingStyle={styles.receiving}
-            renderContent={({viewState}) => {
-              const receivingDrag = viewState && viewState.receivingDrag;
-              const payload = receivingDrag && receivingDrag.payload;
+            <DraxView
+              style={[
+                {
+                  width: tileWidth,
+                  height: boxHeight,
+                  marginTop: marginVertical,
+                  marginBottom: marginVertical,
+                  marginLeft: marginHorizontal,
+                  marginRight: marginHorizontal,
+                },
+              ]}
+              // _onReceiveDragDrop
 
-              return (
-                item?.EVENT != undefined && (
-                  <View
-                    style={{
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                    }}>
+              payload={item}
+              onDrag={e => {
+                handleDateClick(e);
+              }}
+              onDragEnd={e => {
+                handleInlineCanceledDragDrop(e);
+              }}
+              receivingStyle={styles.receiving}
+              renderContent={({viewState}) => {
+                const receivingDrag = viewState && viewState.receivingDrag;
+                const payload = receivingDrag && receivingDrag.payload;
+
+                return (
+                  item?.EVENT != undefined && (
                     <View
                       style={{
-                        backgroundColor: selectedColor,
-                        flexDirection: 'row',
+                        flexDirection: 'column',
                         justifyContent: 'space-between',
-                        width: tileWidth,
-                        padding: 10,
                       }}>
-                      {/* <TouchableOpacity
+                      <View
+                        style={{
+                          backgroundColor: selectedColor,
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          width: tileWidth,
+                          padding: 10,
+                        }}>
+                        {/* <TouchableOpacity
                         onPress={() => {
                           handleDateClick(item);
                         }}> */}
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontSize: 12,
-                          // fontWeight: 'bold',
-                        }}>
-                        Used Lmt.
-                      </Text>
-                      {/* </TouchableOpacity> */}
+                        <Text
+                          style={{
+                            color: 'white',
+                            fontSize: 12,
+                            // fontWeight: 'bold',
+                          }}>
+                          Used Lmt.
+                        </Text>
+                        {/* </TouchableOpacity> */}
 
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontSize: 15,
-                          fontWeight: 'bold',
-                        }}>
-                        {numDifferentiation(item.EVENT.TOTAL_PAYMENT)}
-                      </Text>
+                        <Text
+                          style={{
+                            color: 'white',
+                            fontSize: 15,
+                            fontWeight: 'bold',
+                          }}>
+                          {numDifferentiation(item.EVENT.TOTAL_PAYMENT)}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                )
-              );
-            }}
-            onReceiveDragDrop={event => {
-              handleInlineDrop(event);
-              // handleDateClick(event)
+                  )
+                );
+              }}
+              onReceiveDragDrop={event => {
+                handleInlineDrop(event);
+                // handleDateClick(event)
 
-              // setReceived([...received, event.dragged.payload || '?']);
-            }}
-          />
-          {item?.EVENT != undefined && (
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                position: 'absolute',
-                bottom: 0,
-                // alignSelf:'center'
-              }}>
-              {item.EVENT?.PaymentStatus == true &&
-                item.EVENT?.PaymentStatusSAP == false && (
-                  <Button
-                    onPress={() => {
-                      toggleUnFreezeModal();
-                      setFreezeUnfreezeClickedData(item);
-                    }}
-                    title="Unfreeze"
-                  />
-                )}
-              {item.EVENT?.PaymentStatus == false &&
-                item.EVENT?.PaymentStatusSAP == false && (
-                  <Button
-                    onPress={() => {
-                      toggleFreezeModal();
-                      setFreezeUnfreezeClickedData(item);
-                    }}
-                    title="Freeze"
-                  />
-                )}
-              {item.EVENT?.PaymentStatusSAP == true && (
-                <View
-                  style={{
-                    backgroundColor: 'green',
-                    marginRight: 5,
-                    padding: 2,
-                    borderRadius: 5,
-                  }}>
-                  <Text style={{color: 'white'}}>Processed</Text>
-                </View>
-              )}
+                // setReceived([...received, event.dragged.payload || '?']);
+              }}
+            />
+            {item?.EVENT != undefined && (
               <View
                 style={{
-                  backgroundColor: selectedColor,
-                  borderRadius: 10,
-                  right: 0,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  position: 'absolute',
+                  bottom: 0,
+                  // alignSelf:'center'
                 }}>
-                <Text
+                {item.EVENT?.PaymentStatus == true &&
+                  item.EVENT?.PaymentStatusSAP == false && (
+                    // <Button
+                    //   onPress={() => {
+                    //     toggleUnFreezeModal();
+                    //     setFreezeUnfreezeClickedData(item);
+                    //   }}
+                    //   title="Unfreeze"
+                    // />
+
+                    <>
+                      {activeVendor ? (
+                        <View
+                          style={{
+                            flex: 1,
+                          }}
+                        />
+                      ) : (
+                        <AnimatedIconButton
+                          label={'UnFreeze'}
+                          onPress={() => {
+                            toggleUnFreezeModal();
+                            setFreezeUnfreezeClickedData(item);
+                          }}
+                          containerStyle={{
+                            backgroundColor: '#4dc7d9',
+                            padding: 5,
+                          }}
+                          container={{
+                            flex: 1,
+                          }}
+                          labelStyle={{
+                            fontSize: 12,
+                          }}
+                          startColor={'#f03f34'}
+                          endColor={'#495E57'}
+                        />
+                      )}
+                    </>
+
+                    // </View>
+                  )}
+                {item.EVENT?.PaymentStatus == false &&
+                  item.EVENT?.PaymentStatusSAP == false && (
+                    // <Button
+                    //   onPress={() => {
+                    //     toggleFreezeModal();
+                    //     setFreezeUnfreezeClickedData(item);
+                    //   }}
+                    //   title="Freeze"
+                    // />
+
+                    <>
+                      {activeVendor ? (
+                        <View
+                          style={{
+                            flex: 1,
+                          }}
+                        />
+                      ) : (
+                        <AnimatedIconButton
+                          label={'Freeze'}
+                          onPress={() => {
+                            toggleFreezeModal();
+                            setFreezeUnfreezeClickedData(item);
+                          }}
+                          containerStyle={{
+                            backgroundColor: '#4dc7d9',
+                            padding: 5,
+                          }}
+                          container={{
+                            flex: 1,
+                          }}
+                          labelStyle={{
+                            fontSize: 12,
+                          }}
+                          startColor={'#4dc7d9'}
+                          endColor={'#495E57'}
+                        />
+                      )}
+                    </>
+                  )}
+                {item.EVENT?.PaymentStatusSAP == true && (
+                  <View
+                    style={{
+                      backgroundColor: 'green',
+                      marginRight: 5,
+                      padding: 2,
+                      borderRadius: 5,
+                    }}>
+                    <Text style={{color: 'white'}}>Processed</Text>
+                  </View>
+                )}
+                <View
                   style={{
-                    padding: 10,
-                    fontSize: 20,
-                    color: '#fff',
+                    backgroundColor: selectedColor,
+                    borderRadius: 10,
+                    right: 0,
                   }}>
-                  +{item.EVENT.PAYMENT_DETAILS.length}
-                </Text>
+                  <Text
+                    style={{
+                      padding: 10,
+                      fontSize: 20,
+                      color: '#fff',
+                    }}>
+                    +{item.EVENT.PAYMENT_DETAILS.length}
+                  </Text>
+                </View>
               </View>
-            </View>
-          )}
-        </View>
+            )}
+          </>
+        </LinearGradient>
       </View>
     );
   };
@@ -978,15 +1375,19 @@ CardBGColor = "#d3dede";
       let tempSubPaymentDate = [...subPaymentDate];
 
       const foundIndex = tempSubPaymentDate.findIndex(
-        val => val.Document_No == draggedItem.Document_No,
+        val =>
+          val.Document_No == draggedItem.Document_No &&
+          val.Item == draggedItem.Item &&
+          val.Fiscal_year == draggedItem.Fiscal_year &&
+          val.Company_Code == draggedItem.Company_Code,
       );
       tempSubPaymentDate.splice(foundIndex, 1);
-      tempSubPaymentDate.sort(function (a, b) {
-        return b.TOTAL_PAYMENT - a.TOTAL_PAYMENT;
-      });
 
       setTimeout(() => {
         tempSubPaymentDate.push({...draggedItem});
+        tempSubPaymentDate.sort(function (a, b) {
+          return b.Amount - a.Amount;
+        });
 
         setSubPaymentDate(tempSubPaymentDate);
       }, 100);
@@ -1132,7 +1533,7 @@ CardBGColor = "#d3dede";
             if (
               dateNum >= weeKfirst &&
               dateNum <= weeKLast &&
-              month == dataMonth
+              Number(month) == Number(dataMonth)
             ) {
               sum += Number(innerval.EVENT.TOTAL_PAYMENT);
             }
@@ -1217,10 +1618,29 @@ CardBGColor = "#d3dede";
         start: FreezeUnfreezeClickedData.DATE,
       })
       .then(response => {
-        let [year, month, day] = CurrentSelectedMonth.split('-');
-        const startDate = year + month + '01';
-        const endDate = year + month + '31';
-        getPOsDataAction(startDate, endDate);
+        // let [year, month, day] = CurrentSelectedMonth.split('-');
+        // const startDate = year + month + '01';
+        // const endDate = year + month + '31';
+        // getPOsDataAction(startDate, endDate);
+
+        let tempCalendarDates = [...CalendarDates];
+
+        const index = tempCalendarDates.findIndex(
+          item => item.DATE == FreezeUnfreezeClickedData.DATE,
+        );
+
+        tempCalendarDates[index].EVENT.PaymentStatus = freezeStatus;
+        tempCalendarDates[index].EVENT.PAYMENT_DETAILS.map(val => {
+          val.PaymentStatus = freezeStatus;
+        });
+
+
+              const output = getCalenderAmountSum(tempCalendarDates);
+
+        setCalendarDates(output);
+
+  
+
         if (response.data.STATUS_CODE == 200) {
           if (freezeStatus == true) {
             toggleFreezeModal();
@@ -1282,6 +1702,72 @@ CardBGColor = "#d3dede";
     setVendorTotalData(SearchedOutput);
   };
 
+  const saveCurrentMonthPayments = () => {
+    let tempCalendarDates = [...CalendarDates];
+    let AllPaymentsInCalendar = [];
+
+    tempCalendarDates.map(val => {
+
+      if (val?.EVENT != undefined) {
+        val.EVENT.PAYMENT_DETAILS.map(item => {
+          AllPaymentsInCalendar.push({...item,SAVED_DATE:val.DATE});
+        });
+      }
+
+    });
+
+
+                let tempTotalPaymentAmount = 0;
+    axios.post(AXIOS.axiosUrl + AXIOS.SavePayments, {
+      PAYMENTS: AllPaymentsInCalendar,
+    }).then((response)=>{
+     
+          Toast.show({
+            type: 'success',
+            text1: 'Data Saved',
+          });
+        
+              let [year, month, day] = CurrentSelectedMonth.split('-');
+
+              const startDate = year + month + '01';
+              const endDate = year + month + '31';
+              getPOsDataAction(startDate, endDate);
+
+              // let tempCurrentSelectedMonth = CurrentSelectedMonth;
+
+              // let [currentYear, currentMonth, day] = tempCurrentSelectedMonth.split('-');
+
+                    // tempCalendarDates.map(val => {
+                    //   if (val?.EVENT != undefined) {
+                    //     //adding only current month payments in monthly total
+        
+
+                    //     const [year, month, day] = val.DATE.split('-');
+                    //     if (
+                    //       Number(year) == Number(currentYear) &&
+                    //       Number(month) == Number(currentMonth)
+                    //     ) {
+                    //       tempTotalPaymentAmount += Number(
+                    //         val?.EVENT?.TOTAL_PAYMENT,
+                    //       );
+                    //     }
+                    //   }
+                    // });
+              
+                    // setCurrentMonthTotalPayment(tempTotalPaymentAmount);
+    }).catch((err)=>{
+             Toast.show({
+               type: 'error',
+               text1: 'Some issue in saving data',
+             });
+
+       
+    })
+
+
+
+  };
+
   return (
     <GestureHandlerRootView
       style={{
@@ -1292,6 +1778,8 @@ CardBGColor = "#d3dede";
           flex: 1,
           backgroundColor: '#fff',
         }}>
+        <Toast position="left" topOffset={0} />
+
         {/* <StatusBar animated={true} backgroundColor="red" /> */}
 
         <DraxProvider>
@@ -1318,28 +1806,85 @@ CardBGColor = "#d3dede";
                     minHeight: 20,
                     minWidth: 100,
                     backgroundColor: '#fff',
-                    padding: 10,
+                    padding: 5,
                     margin: 5,
                     borderRadius: 5,
                   }}>
-                  <Text
+                  <Image
                     style={{
-                      fontSize: 20,
-                      color: 'black',
-                      textAlign: 'center',
-                    }}>
-                    Total Payments
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 20,
-                      color: 'red',
-                      textAlign: 'center',
-                      fontWeight: 'bold',
-                    }}>
-                    {numDifferentiation(currentMonthTotalPayment)}
-                  </Text>
+                      width: 140,
+                      height: 100,
+                      // resizeMode: 'stretch',
+                    }}
+                    source={IMAGES.iilLogo}
+                  />
                 </View>
+                <Popover
+                  key={'total payment'}
+                  from={(sourceRef, showPopover) => (
+                    <View>
+                      <TouchableOpacity onPress={showPopover}>
+                        <View
+                          style={{
+                            shadowColor: 'gray',
+                            shadowOffset: {width: 0, height: 0},
+                            shadowOpacity: 1,
+                            shadowRadius: 8,
+                            elevation: 8,
+                            minHeight: 20,
+                            minWidth: 100,
+                            backgroundColor: '#fff',
+                            padding: 10,
+                            margin: 5,
+                            borderRadius: 5,
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 20,
+                              color: 'black',
+                              textAlign: 'center',
+                            }}>
+                            Total Payments
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 20,
+                              color: 'red',
+                              textAlign: 'center',
+                              fontWeight: 'bold',
+                            }}>
+                            {numDifferentiation(currentMonthTotalPayment)}
+                            {/* {currentMonthTotalPayment} */}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  )}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      padding: 10,
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        color: '#000',
+                        fontSize: 15,
+                        fontWeight: 500,
+                      }}>
+                      Monthly Total Amount:
+                    </Text>
+                    <Text
+                      style={{
+                        color: 'red',
+                        fontSize: 17,
+                        fontWeight: 600,
+                      }}>
+                      {numCommaSeparate(currentMonthTotalPayment)}
+                    </Text>
+                  </View>
+                </Popover>
+
                 <TouchableOpacity
                   style={{
                     shadowColor: 'gray',
@@ -1350,6 +1895,9 @@ CardBGColor = "#d3dede";
                     minHeight: 20,
                     minWidth: 100,
                     backgroundColor: '#a0d8b3',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     padding: 10,
                     margin: 5,
                     borderRadius: 5,
@@ -1357,14 +1905,35 @@ CardBGColor = "#d3dede";
                   onPress={() => {
                     // setCalendarDates(stateDummy)
                     let [year, month, day] = CurrentSelectedMonth.split('-');
+
+                    let tempCurrentMonth;
+
+                    if (month < 10) {
+                      tempCurrentMonth =
+                        year + '-0' + Number(month) + '-' + day;
+                    } else {
+                      tempCurrentMonth = year + '-' + month + '-' + day;
+                    }
+
                     getPaymentData(
                       month,
                       year,
                       PaymentDataProps,
-                      CurrentSelectedMonth,
+                      tempCurrentMonth,
                     );
                     setActiveVendor('');
+                    setSelectedDate(null);
+                    setSubPaymentDate([]);
                   }}>
+                  <ImageIcon
+                    icon={IMAGES.homeIcon}
+                    iconStyle={{
+                      height: 25,
+                      width: 25,
+                      tintColor: '#545454',
+                      margin: 10,
+                    }}
+                  />
                   <Text
                     style={{
                       textAlign: 'center',
@@ -1404,14 +1973,16 @@ CardBGColor = "#d3dede";
                   />
                 </View>
 
-                <ScrollView bounces={true} style={{
-                  height:height-250
-                }}>
+                <ScrollView
+                  bounces={true}
+                  style={{
+                    height: height - 400,
+                  }}>
                   {vendorTotalData.map(val => {
                     let vendorName = '';
 
-                    if (val.Vendor_Name.length >= 7) {
-                      vendorName = val.Vendor_Name.substring(0, 7) + '...';
+                    if (val.Vendor_Name.length >= 20) {
+                      vendorName = val.Vendor_Name.substring(0, 20) + '...';
                     } else {
                       vendorName = val?.Vendor_Name;
                     }
@@ -1423,6 +1994,8 @@ CardBGColor = "#d3dede";
                               onLongPress={showPopover}
                               onPress={() => {
                                 handleVendorClick(val);
+                                setSelectedDate(null);
+                                setSubPaymentDate([]);
                               }}>
                               <View
                                 style={{
@@ -1431,8 +2004,8 @@ CardBGColor = "#d3dede";
                                   shadowOpacity: 1,
                                   shadowRadius: 8,
                                   elevation: 8,
-                                  flexDirection: 'row',
-                                  justifyContent: 'space-between',
+                                  // flexDirection: 'row',
+                                  // justifyContent: 'space-between',
                                   minHeight: 20,
                                   minWidth: 100,
                                   backgroundColor:
@@ -1449,6 +2022,8 @@ CardBGColor = "#d3dede";
                                       activeVendor == val.Vendor_Code
                                         ? '#fff'
                                         : '#000',
+                                    fontSize: 14,
+                                    fontWeight: 'bold',
                                   }}>
                                   {vendorName}
                                 </Text>
@@ -1456,10 +2031,11 @@ CardBGColor = "#d3dede";
                                   style={{
                                     // marginLeft: 10,
                                     fontWeight: 'bold',
+                                    fontSize: 15,
                                     color:
                                       activeVendor == val.Vendor_Code
                                         ? '#fff'
-                                        : '#000',
+                                        : 'red',
                                   }}>
                                   {numDifferentiation(val.VENDOR_TOTAL_PAYMENT)}
                                 </Text>
@@ -1606,7 +2182,7 @@ CardBGColor = "#d3dede";
                     key={index}
                     from={(sourceRef, showPopover) => (
                       <View>
-                        <TouchableWithoutFeedback onLongPress={showPopover}>
+                        <TouchableOpacity onPress={showPopover}>
                           <View
                             style={{
                               // width: tileWidth,
@@ -1643,7 +2219,7 @@ CardBGColor = "#d3dede";
                               </Text>
                             </View>
                           </View>
-                        </TouchableWithoutFeedback>
+                        </TouchableOpacity>
                       </View>
                     )}>
                     <View
@@ -1678,33 +2254,113 @@ CardBGColor = "#d3dede";
             {/* <View
             style={[styles.sectionContainer, {width: portrait ? 800 : 1000}]}> */}
             <View style={{width: '70%'}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-around',
-                  marginHorizontal: 30,
-                  marginVertical: 5,
-                }}>
-                <IconButton
-                  icon={IMAGES.BackButton}
-                  onPress={() => {
-                    handleBackButton();
-                  }}
-                />
-                <Text
+              <View>
+                <View
                   style={{
-                    fontSize: 20,
-                    fontWeight: 'bold',
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                    marginHorizontal: 30,
+                    marginVertical: 5,
                   }}>
-                  {MonthArr[CurrentSelectedMonth.split('-')[1] - 1].MONTH_NAME}{' '}
-                  {CurrentSelectedMonth.split('-')[0]}
-                </Text>
-                <IconButton
-                  icon={IMAGES.NextButton}
-                  onPress={() => {
-                    handleNextButton();
-                  }}
-                />
+                  <IconButton
+                    icon={IMAGES.BackButton}
+                    onPress={() => {
+                      handleBackButton();
+                      setSelectedDate(null);
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                    }}>
+                    {
+                      MonthArr[CurrentSelectedMonth.split('-')[1] - 1]
+                        .MONTH_NAME
+                    }{' '}
+                    {CurrentSelectedMonth.split('-')[0]}
+                  </Text>
+                  <IconButton
+                    icon={IMAGES.NextButton}
+                    onPress={() => {
+                      handleNextButton();
+                      setSelectedDate(null);
+                    }}
+                  />
+                </View>
+                <View
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 20,
+                  }}>
+                  <TouchableOpacity
+                    style={{
+                      shadowColor: 'gray',
+                      shadowOffset: {width: 0, height: 0},
+                      shadowOpacity: 1,
+                      shadowRadius: 8,
+                      elevation: 8,
+                      minHeight: 5,
+                      minWidth: 100,
+                      backgroundColor: '#4C8BF5',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: 5,
+                      // margin: 0,
+                      borderRadius: 5,
+                    }}
+                    onPress={() => {
+                      saveCurrentMonthPayments();
+                      // setCalendarDates(stateDummy)
+                    }}>
+                    {/* <ImageIcon
+                      icon={IMAGES.homeIcon}
+                      iconStyle={{
+                        height: 22,
+                        width: 22,
+                        tintColor: '#fff',
+                        // margin: 10,
+                      }}
+                    /> */}
+
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        color: '#fff',
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                      }}>
+                      Save
+                    </Text>
+                    <ImageIcon
+                      icon={IMAGES.save}
+                      iconStyle={{
+                        height: 20,
+                        width: 20,
+                        tintColor: '#fff',
+                        marginLeft: 10,
+                      }}
+                    />
+                  </TouchableOpacity>
+                </View>
+                {/* <View
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 20,
+                  }}>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      color: '#4C8BF5',
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                    }}>
+                    {lastSync}
+                  </Text>
+                </View> */}
               </View>
 
               <View style={[styles.sectionContainer]}>
@@ -1743,12 +2399,92 @@ CardBGColor = "#d3dede";
                       }
                     }
                   />
+
+                  <IconButton
+                    icon={IMAGES.refresh}
+                    onPress={() => {
+                      let [year, month, day] = CurrentSelectedMonth.split('-');
+                      const startDate = year + month + '01';
+                      const endDate = year + month + '31';
+                      getPOsDataAction(startDate, endDate, true);
+                      setSelectedDate(null);
+                      setSubPaymentDate([]);
+                    }}
+                  />
+
                   <IconButton
                     icon={IMAGES.logout}
                     onPress={() => {
                       SessionLogout();
                     }}
                   />
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    margin: 1,
+                  }}>
+                  <Text
+                    style={{
+                      fontWeight: 500,
+                    }}>
+                    Synced {lastSync}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                  }}>
+                  {[
+                    {
+                      COLOR: SALARY_COLOR,
+                      LABEL: 'Salary',
+                    },
+                    {
+                      COLOR: GST_COLOR,
+                      LABEL: 'GST',
+                    },
+                    {
+                      COLOR: TDS_COLOR,
+                      LABEL: 'TDS',
+                    },
+                    {
+                      COLOR: LC_COLOR,
+                      LABEL: 'LC',
+                    },
+                  ].map(val => {
+                    return (
+                      <View
+                        style={{
+                          width: 60,
+                          // height:40
+                          marginBottom: 5,
+                        }}>
+                        <LinearGradient
+                          colors={[...val.COLOR]}
+                          start={{x: 0, y: 0}}
+                          end={{x: 1, y: 1}}
+                          style={[
+                            styles.boxContainer,
+                            {
+                              width: 40,
+                              height: 40,
+                              marginRight: 5,
+                            },
+                          ]}></LinearGradient>
+                        <Text
+                          style={{
+                            textAlign: 'left',
+                          }}>
+                          {' '}
+                          {val.LABEL}
+                        </Text>
+                      </View>
+                    );
+                  })}
                 </View>
 
                 {subPaymentDate.length > 0 && (
@@ -1783,19 +2519,30 @@ CardBGColor = "#d3dede";
                     </Text>
                   </View>
                 )}
+
                 <ScrollView
                   bounces={true}
                   style={{
                     height: height - 140,
-                  }}>
+                    backgroundColor: '#e6e6e6',
+                  }}
+                  showsVerticalScrollIndicator>
                   <View>
                     {subPaymentDate.map(val => {
+                      let vendorName = '';
+
+                      if (val.Vendor_Name.length >= 22) {
+                        vendorName = val.Vendor_Name.substring(0, 22) + '...';
+                      } else {
+                        vendorName = val?.Vendor_Name;
+                      }
                       return (
                         <View
                           style={{
                             // position:"absolute"
                             flexDirection: 'row',
                             alignItems: 'center',
+                            justifyContent: 'space-between',
                           }}>
                           <DraxView
                             style={[
@@ -1821,25 +2568,26 @@ CardBGColor = "#d3dede";
                             <View
                               style={{
                                 // backgroundColor: 'red',
-                                // width:
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
+                                width: 120,
+                                maxWidth: 120,
+                                // flexDirection: 'row',
+                                // justifyContent: 'space-between',
                                 // width: tileWidth,
                                 paddingVertical: 5,
                                 paddingHorizontal: 1,
-                                alignItems: 'center',
+                                // alignItems: 'center',
                               }}>
                               <Text
                                 style={{
                                   color: 'black',
-                                  fontSize: 12,
-                                  // fontWeight: 'bold',
+                                  fontSize: 13,
+                                  fontWeight: 'bold',
                                 }}>
-                                {val.Due_date} {''}
+                                {/* {val.Due_date} {''} */}
+                                {vendorName}
                               </Text>
                               <Text
                                 style={{
-                                  // color: '#4C8BF5',
                                   color: 'red',
                                   fontSize: 14,
                                   fontWeight: 'bold',
@@ -1993,8 +2741,7 @@ CardBGColor = "#d3dede";
                 />
               </View>
               <Text style={styles.areYouSure}>
-                Are you sure! Your selected date will be locked and cannot be
-                changed.
+                Are you sure! Your selected date will be locked
               </Text>
               <View
                 style={{
@@ -2011,12 +2758,27 @@ CardBGColor = "#d3dede";
                   onPress={toggleFreezeModal}
                   color="#000"
                 />
-                <Button
+                {/* <Button
                   title="Freeze"
                   onPress={() => {
                     handleFreezeClick(true);
                   }}
                   // color="blue"
+                /> */}
+                <AnimatedIconButton
+                  label={'Freeze'}
+                  onPress={() => {
+                    handleFreezeClick(true);
+                  }}
+                  containerStyle={{
+                    backgroundColor: '#4dc7d9',
+                    padding: 5,
+                  }}
+                  labelStyle={{
+                    fontSize: 15,
+                  }}
+                  startColor={'#4dc7d9'}
+                  endColor={'#495E57'}
                 />
               </View>
             </View>
@@ -2070,12 +2832,27 @@ CardBGColor = "#d3dede";
                   onPress={toggleUnFreezeModal}
                   color="#000"
                 />
-                <Button
+                {/* <Button
                   title="Unfreeze"
                   onPress={() => {
                     handleFreezeClick(false);
                   }}
                   color="red"
+                /> */}
+                <AnimatedIconButton
+                  label={'UnFreeze'}
+                  onPress={() => {
+                    handleFreezeClick(false);
+                  }}
+                  containerStyle={{
+                    backgroundColor: '#4dc7d9',
+                    padding: 5,
+                  }}
+                  labelStyle={{
+                    fontSize: 15,
+                  }}
+                  startColor={'#f03f34'}
+                  endColor={'#495E57'}
                 />
               </View>
             </View>
@@ -2177,6 +2954,8 @@ const mapStateToProps = state => ({
   PAYMENT_DATA: state.auth.payment_data,
   MAX_LIMIT: state.auth.max_limit,
   DISABLED_DATES: state.auth.disabled_dates,
+  LAST_SYNC_DATE: state.auth.last_sync_date,
+  LOWER_LIMIT_PERCENTAGE: state.auth.lower_limit_percentage,
 });
 
-export default connect(mapStateToProps)(PaymentDashboard);
+export default connect(mapStateToProps, {updateDataSyncDate})(PaymentDashboard);
