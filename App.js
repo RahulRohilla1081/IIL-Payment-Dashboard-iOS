@@ -10,7 +10,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import RenderOnLoad from './RenderOnLoad';
 import PaymentWebView from './Src/Screens/PaymentDashboard/PaymentWebView';
 import Login from './Src/Screens/Login/Login';
-// import DraggableItem from './Src/Screens/PaymentDashboard/DroppableItem';
+import DraggableItem from './Src/Screens/PaymentDashboard/DroppableItem';
 
 
 
