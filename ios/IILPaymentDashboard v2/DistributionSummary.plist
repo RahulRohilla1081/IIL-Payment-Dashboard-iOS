@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IILPaymentDashboard.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>arm64</string>
+			</array>
+			<key>buildNumber</key>
+			<string>1</string>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>930CD7631F7E6E41FDC88538E0D9923B4A1DAA7E</string>
+				<key>dateExpires</key>
+				<string>03/09/24</string>
+				<key>type</key>
+				<string>Cloud Managed Apple Distribution</string>
+			</dict>
+			<key>embeddedBinaries</key>
+			<array>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>buildNumber</key>
+					<string>0.12.0</string>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>930CD7631F7E6E41FDC88538E0D9923B4A1DAA7E</string>
+						<key>dateExpires</key>
+						<string>03/09/24</string>
+						<key>type</key>
+						<string>Cloud Managed Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>hermes.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>Q598CHGL9K</string>
+						<key>name</key>
+						<string>SAMISHTI INFOTECH PRIVATE LIMITED</string>
+					</dict>
+					<key>versionNumber</key>
+					<string>0.12.0</string>
+				</dict>
+			</array>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>Q598CHGL9K.org.reactjs.native.example.IILPaymentDashboard</string>
+				<key>com.apple.developer.team-identifier</key>
+				<string>Q598CHGL9K</string>
+				<key>get-task-allow</key>
+				<false/>
+			</dict>
+			<key>name</key>
+			<string>IILPaymentDashboard.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>a675cc9b-59a5-435f-8c95-383f80954d94</string>
+				<key>dateExpires</key>
+				<string>03/09/24</string>
+				<key>name</key>
+				<string>iOS Team Ad Hoc Provisioning Profile: org.reactjs.native.example.IILPaymentDashboard</string>
+			</dict>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>Q598CHGL9K</string>
+				<key>name</key>
+				<string>SAMISHTI INFOTECH PRIVATE LIMITED</string>
+			</dict>
+			<key>versionNumber</key>
+			<string>1.0</string>
+		</dict>
+	</array>
+</dict>
+</plist>
